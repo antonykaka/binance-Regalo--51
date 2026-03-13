@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Gift - Entrega de BTC</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --binance-yellow: #FCD535;
+            --binance-black: #1E2329;
+            --text-gray: #848E9C;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0B0E11;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: var(--binance-black);
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            position: relative;
+        }
+
+        .expiry-timer {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: #F0B90B;
+            background: rgba(240, 185, 11, 0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .qr-section {
+            background: white;
+            padding: 15px;
+            display: inline-block;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #EAECEF;
+        }
+
+        .highlight {
+            color: var(--binance-yellow);
+            font-weight: bold;
+        }
+
+        .amount-card {
+            background: #2B3139;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .btc-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .conversions {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background-color: var(--binance-yellow);
+            color: black;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-install {
+            background-color: transparent;
+            border: 2px solid var(--binance-yellow);
+            color: var(--binance-yellow);
+            margin-top: 15px;
+            display: none;
+            text-decoration: none;
+            display: none; /* Se activa por JS */
+            justify-content: center;
+            align-items: center;
+        }
+
+        #install-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="expiry-timer">
+            Expira en: <span id="timer">05:00</span>
+        </div>
+
+        <div class="qr-section" id="qrcode"></div>
+
+        <h2><span class="highlight">Antony123455wasqe</span> ha dado 1 BTC a <span class="highlight">+51 994 683 482</span></h2>
+
+        <div class="amount-card">
+            <div class="btc-amount">1.00 BTC</div>
+            <div class="conversions">
+                ≈ <span id="usd-val">...</span> USD<br>
+                ≈ <span id="pen-val">...</span> PEN
+            </div>
+        </div>
+
+        <button class="btn" id="withdraw-btn" onclick="showInstall()">RETIRAR</button>
+
+        <div id="install-container">
+            <a href="https://play.google.com/store/apps/details?id=com.binance.dev&hl=es_PE" target="_blank" class="btn btn-install" style="display: flex;">
+                INSTALAR BINANCE
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de Precios (Simulados - aprox Marzo 2026)
+        const btcToUsd = 95000; 
+        const usdToPen = 3.75;
+
+        document.getElementById('usd-val').innerText = btcToUsd.toLocaleString();
+        document.getElementById('pen-val').innerText = (btcToUsd * usdToPen).toLocaleString();
+
+        // Generar QR que apunta a la URL actual para compartir
+        new QRCode(document.getElementById("qrcode"), {
+            text: window.location.href,
+            width: 150,
+            height: 150,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+        });
+
+        // Lógica del Temporizador
+        let time = 300; // 5 minutos en segundos
+        const timerElement = document.getElementById('timer');
+
+        const countdown = setInterval(() => {
+            const minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            timerElement.innerHTML = `${minutes}:${seconds}`;
+            
+            if (time <= 0) {
+                clearInterval(countdown);
+                timerElement.innerHTML = "EXPIRADO";
+                document.getElementById('withdraw-btn').disabled = true;
+                document.getElementById('withdraw-btn').innerText = "REGALO EXPIRADO";
+            }
+            time--;
+        }, 1000);
+
+        // Lógica de botones
+        function showInstall() {
+            document.getElementById('withdraw-btn').style.display = 'none';
+            document.getElementById('install-container').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
